@@ -1,6 +1,7 @@
 package com.atoudeft.banque;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+//Cet import fonctionnait pas, donc j'ai remplacé sa fonctionnalité
+//import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class Banque implements Serializable {
      * @return  true si le compte-bancaire appartient au compte-client
      */
     public boolean appartientA(String numeroCompteBancaire, String numeroCompteClient) {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     /**
@@ -49,7 +50,7 @@ public class Banque implements Serializable {
      * @return true si le dépot s'est effectué correctement
      */
     public boolean deposer(double montant, String numeroCompte) {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     /**
@@ -60,7 +61,7 @@ public class Banque implements Serializable {
      * @return true si le retrait s'est effectué correctement
      */
     public boolean retirer(double montant, String numeroCompte) {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     /**
@@ -71,7 +72,7 @@ public class Banque implements Serializable {
      * @return true si l'opération s'est déroulée correctement
      */
     public boolean transferer(double montant, String numeroCompteInitial, String numeroCompteFinal) {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     /**
@@ -82,8 +83,7 @@ public class Banque implements Serializable {
      * @param description texte descriptif de la facture
      * @return true si le paiement s'est bien effectuée
      */
-    public boolean payerFacture(double montant, String numeroCompte, String numeroFacture, String description) {
-        throw new NotImplementedException();
+    public boolean payerFacture(double montant, String numeroCompte, String numeroFacture, String description) {throw new UnsupportedOperationException("Not implemented yet");
     }
 
     /**
