@@ -2,7 +2,9 @@ package com.atoudeft.banque.serveur;
 
 import com.atoudeft.banque.CompteBancaire;
 import com.atoudeft.commun.net.Connexion;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+// import non fonctionnel
+//import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.net.Socket;
 
@@ -30,7 +32,7 @@ public class ConnexionBanque extends Connexion {
      */
     public boolean estInactifDepuis(long delai) {
         //À définir :
-        throw new NotImplementedException();//ligne à supprimer
+        throw new UnsupportedOperationException("Not implemented yet");//ligne à supprimer
     }
 
     /**
