@@ -1,7 +1,7 @@
 package com.atoudeft.banque.serveur;
 
 public class ThreadDesInactifs extends Thread {
-    public static int DELAI_SLEEP = 30000;
+    public static int DELAI_SLEEP = 5000;
     private ServeurBanque serveurBanque;
 
     public ThreadDesInactifs(ServeurBanque serveurBanque) {
