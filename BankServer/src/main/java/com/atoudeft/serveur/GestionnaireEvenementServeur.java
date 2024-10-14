@@ -80,6 +80,55 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                             cnx.envoyer("NOUVEAU NO "+t[0]+" existe");
                     }
                     break;
+
+                case "CONNECT": // Se connecte à un compte client
+
+                    // récuperer login info
+                    argument = evenement.getArgument();
+                    t = argument.split(":");
+                    String input_num_compte;
+                    String input_nip;
+
+                    try {
+                        input_num_compte = t[0];
+                        input_nip = t[1];
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        cnx.envoyer("CONNECT NO");
+                        break;
+                    }
+
+                    banque = serveurBanque.getBanque();
+
+                    // Vérifier si déjà connecté au compte
+                    if (cnx.getNumeroCompteClient()!=null) {
+                        cnx.envoyer("CONNECT NO deja connecte");
+                        break;
+                    }
+
+                    // Vérifier si le numéro de compte entré existe
+                    if (banque.getCompteClient(input_num_compte) == null) {
+                        cnx.envoyer("CONNECT NO compte non trouvé");
+                        break;
+                    }
+
+                    // Vérifier nip
+                    if (!banque.getCompteClient(input_num_compte).getNip().equals(input_nip)) {
+                        cnx.envoyer("CONNECT NO nip invalide");
+                        break;
+                    }
+
+                    // Ajouter le numéro du compte-client et du compte-chèque dans l'objet ConnexionBanque
+                    cnx.setNumeroCompteClient(input_num_compte);
+
+                    // Obtenir le numéro de compte-chèque par défaut, et le set.
+                    String numCompteCheque = banque.getNumeroCompteParDefaut(input_num_compte);
+                    cnx.setNumeroCompteActuel(numCompteCheque);
+
+                    // Envoyer la confirmation de connexion au client
+                    cnx.envoyer("CONNECT OK");
+                    break;
+
+
                 /******************* TRAITEMENT PAR DÉFAUT *******************/
                 default: //Renvoyer le texte recu convertit en majuscules :
                     msg = (evenement.getType() + " " + evenement.getArgument()).toUpperCase();

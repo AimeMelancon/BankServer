@@ -16,6 +16,10 @@ public class CompteCheque extends CompteBancaire{
         super(numero, type);
     }
 
+    // Accesseurs
+    public String getNumero() { return this.numero; }
+    public double getSolde() { return this.solde; }
+
     /**
      * Ajoute le montant s'il est strictement positif
      * @param montant   Montant à créditer

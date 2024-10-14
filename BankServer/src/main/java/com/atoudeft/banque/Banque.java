@@ -24,13 +24,30 @@ public class Banque implements Serializable {
      * @param numeroCompteClient le numéro du compte-client
      * @return le compte-client s'il a été trouvé. Sinon, retourne null
      */
+
+    // Commented-out car j'aime pas cette version de la méthode. J'ai plutôt crée la mienne
+//    public CompteClient getCompteClient(String numeroCompteClient) {
+//        CompteClient cpt = new CompteClient(numeroCompteClient,"");
+//        int index = this.comptes.indexOf(cpt);
+//        if (index != -1)
+//            return this.comptes.get(index);
+//        else
+//            return null;
+//    }
+
+    /**
+     * Recherche un compte-client à partir de son numéro.
+     *
+     * @param numeroCompteClient le numéro du compte-client
+     * @return le compte-client s'il a été trouvé. Sinon, retourne null
+     */
     public CompteClient getCompteClient(String numeroCompteClient) {
-        CompteClient cpt = new CompteClient(numeroCompteClient,"");
-        int index = this.comptes.indexOf(cpt);
-        if (index != -1)
-            return this.comptes.get(index);
-        else
-            return null;
+        for (CompteClient compte : this.comptes) {
+            if (compte.getNumero().equals(numeroCompteClient)) {
+                return compte;
+            }
+        }
+        return null;  // Si aucun compte n'a été trouvé
     }
 
     /**
