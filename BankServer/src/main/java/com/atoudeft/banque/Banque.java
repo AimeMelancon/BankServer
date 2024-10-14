@@ -5,7 +5,9 @@ package com.atoudeft.banque;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class Banque implements Serializable {
     private String nom;
@@ -107,7 +109,58 @@ public class Banque implements Serializable {
                 . Créer un compte-chèque avec ce numéro et l'ajouter au compte-client;
                 . Ajouter le compte-client à la liste des comptes et retourner true.
          */
-        return this.comptes.add(new CompteClient(numCompteClient,nip)); //À modifier
+
+        //ASCII:
+        //A-Z: 65 - 90
+        //0-9: 48 - 57
+
+        // vérifier A-Z et/ou 0-9 seulement pour le num de compte
+        int[] ascii = numCompteClient.codePoints().toArray();
+        IntStream filter = numCompteClient.codePoints().filter(i -> (i >= 48 && i <= 57) || (i >= 65 && i <= 90));
+        int[] filtered_ascii = filter.toArray();
+
+        if (filtered_ascii.length != ascii.length) { // somehow .equals fonctionne pas, donc on compare leur longueur
+            return false;
+        }
+
+        // vérifier entre 6-8 charactères de longueur pour num de compte
+        if (numCompteClient.length() < 6 || numCompteClient.length() > 8) {
+            return false;
+        }
+
+        // vérifier 0-9 seulement pour le nip
+        int[] nip_ascii = nip.codePoints().toArray();
+        IntStream filter_nip = nip.codePoints().filter(i -> (i >= 48 && i <= 57));
+        int[] filtered_nip = filter_nip.toArray();
+
+        if (filtered_nip.length != nip_ascii.length) {
+            return false;
+        }
+
+        // vérifier entre 4-5 charactères de longueur pour nip
+        if (nip.length() < 4 || nip.length() > 5) {
+            return false;
+        }
+
+        // ne pas créer compte-client s'il existe déjà
+        if (getCompteClient(numCompteClient) != null) {
+            return false;
+        }
+        // Créer nouveau compte-client
+        CompteClient compte_client = new CompteClient(numCompteClient,nip);
+
+        // générer numéro compte de banque
+        String num_banque = CompteBancaire.genereNouveauNumero();
+
+        // créer compte chèque par défaut et ajouter au compte client
+        CompteCheque compte_cheque = new CompteCheque(num_banque, TypeCompte.CHEQUE);
+        compte_client.ajouter(compte_cheque);
+
+        // ajouter compte-client à la liste de comptes
+        this.comptes.add(compte_client);
+
+
+        return true;
     }
 
     /**
@@ -118,6 +171,9 @@ public class Banque implements Serializable {
      */
     public String getNumeroCompteParDefaut(String numCompteClient) {
         //À compléter : retourner le numéro du compte-chèque du compte-client.
-        return null; //À modifier
+       CompteClient compte_client = getCompteClient(numCompteClient);
+
+       return compte_client.getNumero();
+
     }
 }

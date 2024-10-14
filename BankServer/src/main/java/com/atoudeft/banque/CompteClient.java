@@ -20,6 +20,8 @@ public class CompteClient implements Serializable {
         this.nip = nip;
         comptes = new ArrayList<>();
     }
+    // Accesseur
+    public String getNumero() { return this.numero; }
 
     /**
      * Ajoute un compte bancaire au compte-client.
