@@ -3,6 +3,8 @@ package com.atoudeft.banque;
 //Cet import fonctionnait pas, donc j'ai remplacé sa fonctionnalité
 //import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import com.atoudeft.banque.serveur.ServeurBanque;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,7 +27,7 @@ public class Banque implements Serializable {
      * @return le compte-client s'il a été trouvé. Sinon, retourne null
      */
 
-    // Commented-out car j'aime pas cette version de la méthode. J'ai plutôt crée la mienne
+    // Commented-out car j'aime pas cette version de la méthode. J'ai plutôt crée la mienne plus bas.
 //    public CompteClient getCompteClient(String numeroCompteClient) {
 //        CompteClient cpt = new CompteClient(numeroCompteClient,"");
 //        int index = this.comptes.indexOf(cpt);
@@ -113,19 +115,6 @@ public class Banque implements Serializable {
      * @return true si le compte a été créé correctement
      */
     public boolean ajouter(String numCompteClient, String nip) {
-        /*À compléter et modifier :
-            - Vérifier que le numéro a entre 6 et 8 caractères et ne contient que des lettres majuscules et des chiffres.
-              Sinon, retourner false.
-            - Vérifier que le nip a entre 4 et 5 caractères et ne contient que des chiffres. Sinon,
-              retourner false.
-            - Vérifier s'il y a déjà un compte-client avec le numéro, retourner false.
-            - Sinon :
-                . Créer un compte-client avec le numéro et le nip;
-                . Générer (avec CompteBancaire.genereNouveauNumero()) un nouveau numéro de compte bancaire qui n'est
-                  pas déjà utilisé;
-                . Créer un compte-chèque avec ce numéro et l'ajouter au compte-client;
-                . Ajouter le compte-client à la liste des comptes et retourner true.
-         */
 
         //ASCII:
         //A-Z: 65 - 90
@@ -166,8 +155,12 @@ public class Banque implements Serializable {
         // Créer nouveau compte-client
         CompteClient compte_client = new CompteClient(numCompteClient,nip);
 
-        // générer numéro compte de banque
-        String num_banque = CompteBancaire.genereNouveauNumero();
+        // générer numéro compte de banque **unique**
+        String num_banque;
+
+        do {
+            num_banque = CompteBancaire.genereNouveauNumero();
+        } while (this.getCompteClient(num_banque) != null);
 
         // créer compte chèque par défaut et ajouter au compte client
         CompteCheque compte_cheque = new CompteCheque(num_banque, TypeCompte.CHEQUE);
