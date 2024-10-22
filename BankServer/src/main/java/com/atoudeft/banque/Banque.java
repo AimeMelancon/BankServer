@@ -71,7 +71,12 @@ public class Banque implements Serializable {
      * @return true si le dépot s'est effectué correctement
      */
     public boolean deposer(double montant, String numeroCompte) {
-        throw new UnsupportedOperationException("Not implemented yet");
+
+        CompteClient client =getCompteClient(numeroCompte);
+
+
+
+        return false;
     }
 
     /**

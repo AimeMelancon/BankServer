@@ -160,50 +160,76 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
 
 
                 case "SELECT": // Sélectionner un compte
-                banque = serveurBanque.getBanque();
+                    banque = serveurBanque.getBanque();
 
-                // Vérifier que le client est bien connecté
-                if (cnx.getNumeroCompteClient() == null) {
-                    cnx.envoyer("SELECT NO connectez vous");
+                    // Vérifier que le client est bien connecté
+                    if (cnx.getNumeroCompteClient() == null) {
+                        cnx.envoyer("SELECT NO connectez vous");
+                        break;
+                    }
+
+                    // Récupérer l'argument de la commande (cheque ou epargne)
+                    String compte_input = evenement.getArgument().toLowerCase();
+
+                    CompteClient compteClient = banque.getCompteClient(cnx.getNumeroCompteClient());
+
+                    // Cas si le client demande compte chèque
+                    if (compte_input.equals("cheque")) {
+
+                        // Chercher le compte-chèque
+                        CompteBancaire compteCheque = compteClient.getCompteParType(TypeCompte.CHEQUE);
+                        if (compteCheque != null) {
+                            cnx.setNumeroCompteActuel(compteCheque.getNumero());  // Changer le compte actif
+                            cnx.envoyer("SELECT OK");
+                        } else {
+                            cnx.envoyer("SELECT NO pas de compte-cheque");
+                        }
+
+                        // Cas si le client demande compte chèque
+                    } else if (compte_input.equals("epargne")) {
+
+                        // Chercher le compte-épargne
+                        CompteBancaire compte_epargne = compteClient.getCompteParType(TypeCompte.EPARGNE);
+                        if (compte_epargne != null) {
+                            cnx.setNumeroCompteActuel(compte_epargne.getNumero());  // Changer le compte actif
+                            cnx.envoyer("SELECT OK");
+                        } else {
+                            cnx.envoyer("SELECT NO pas de compte-epargne");
+                        }
+                    } else {
+                        // Si l'argument n'est ni 'cheque' ni 'epargne'
+                        cnx.envoyer("SELECT NO argument invalide");
+                    }
                     break;
-                }
 
-                // Récupérer l'argument de la commande (cheque ou epargne)
-                String compte_input = evenement.getArgument().toLowerCase();
 
-                CompteClient compteClient = banque.getCompteClient(cnx.getNumeroCompteClient());
+                case "DEPOT"://Permet d'effectuer un dépôt sur un des deux comptes
 
-                // Cas si le client demande compte chèque
-                if (compte_input.equals("cheque")) {
+                    banque = serveurBanque.getBanque();
 
-                    // Chercher le compte-chèque
-                    CompteBancaire compteCheque = compteClient.getCompteParType(TypeCompte.CHEQUE);
-                    if (compteCheque != null) {
-                        cnx.setNumeroCompteActuel(compteCheque.getNumero());  // Changer le compte actif
-                        cnx.envoyer("SELECT OK");
-                    } else {
-                        cnx.envoyer("SELECT NO pas de compte-cheque");
+                    //Doit être connecté pour faire un dépot dans l'un de ses comptes
+                    if(cnx.getNumeroCompteClient() == null) {
+                        cnx.envoyer("DEPOT NO connectez vous");
                     }
 
-                // Cas si le client demande compte chèque
-                } else if (compte_input.equals("epargne")) {
+                    // Permet de récupérer le montant fournie en dépôt
 
-                    // Chercher le compte-épargne
-                    CompteBancaire compte_epargne = compteClient.getCompteParType(TypeCompte.EPARGNE);
-                    if (compte_epargne != null) {
-                        cnx.setNumeroCompteActuel(compte_epargne.getNumero());  // Changer le compte actif
-                        cnx.envoyer("SELECT OK");
-                    } else {
-                        cnx.envoyer("SELECT NO pas de compte-epargne");
+                    if(isNumeric(evenement.getArgument())) {
+
+                    double input_depot = Double.parseDouble(evenement.getArgument());
+                    //Soit getNumeroCompteClient() ou getNumeroCompteActuel()
+                    banque.deposer(input_depot, cnx.getNumeroCompteClient());
+                    cnx.envoyer("DEPOT OK");
+                    }else{
+                        cnx.envoyer("DEPOT NO montant invalide");
                     }
-                } else {
-                    // Si l'argument n'est ni 'cheque' ni 'epargne'
-                    cnx.envoyer("SELECT NO argument invalide");
-                }
+
+
+
+
+
+
                 break;
-
-
-
                 /******************* TRAITEMENT PAR DÉFAUT *******************/
                 default: //Renvoyer le texte recu convertit en majuscules :
                     msg = (evenement.getType() + " " + evenement.getArgument()).toUpperCase();
@@ -211,4 +237,22 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
             }
         }
     }
+
+    /**
+     *Permet de vérifier si c'est un nombre numérique ou non
+     * @param str L'argument à traiter
+     * @return Vrai si c'est un nombre numérique ou false si ce n'est pas un nombre numérique
+     */
+    //URL : https://stackoverflow.com/questions/1102891/how-to-check-if-a-string-is-numeric-in-java
+    public static boolean isNumeric(String str) {
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch(NumberFormatException e){
+            return false;
+        }
+    }
+
+
+
 }
